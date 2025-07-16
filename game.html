@@ -1,0 +1,130 @@
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+
+const Header = () => (
+  <header className="fixed top-0 w-full z-50 bg-gray-900 text-white p-4 shadow-md flex justify-between items-center">
+    <h1 className="text-xl font-bold">小遊戲平台</h1>
+    <nav className="space-x-4">
+      <Link to="/" className="hover:underline">首頁</Link>
+      <Link to="/games" className="hover:underline">遊戲列表</Link>
+      <Link to="/leaderboard" className="hover:underline">排行榜</Link>
+      <Link to="/profile" className="hover:underline">會員中心</Link>
+      <Link to="/login" className="hover:underline">登入</Link>
+    </nav>
+  </header>
+);
+
+const Layout = ({ children }) => (
+  <div className="bg-gray-800 text-white min-h-screen pt-20">{children}</div>
+);
+
+const SteamHome = () => (
+  <div className="p-8">
+    <h2 className="text-3xl font-bold mb-6">熱門遊戲</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {games.map((game, index) => (
+        <Link to={game.link} key={index} className="bg-gray-700 rounded-xl overflow-hidden hover:shadow-lg transition">
+          <div className="h-40 bg-cover bg-center" style={{ backgroundImage: `url(${game.image})` }}></div>
+          <div className="p-4">
+            <h3 className="text-lg font-semibold">{game.name}</h3>
+            <p className="text-sm text-gray-300">{game.description}</p>
+          </div>
+        </Link>
+      ))}
+    </div>
+  </div>
+);
+
+const GameList = () => (
+  <div className="p-8">
+    <h2 className="text-2xl font-bold mb-4">所有遊戲</h2>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {games.map((game, index) => (
+        <Link to={game.link} key={index} className="bg-gray-700 rounded-xl hover:shadow-lg transition p-4">
+          <h3 className="text-lg font-semibold">{game.name}</h3>
+          <p className="text-sm text-gray-300">{game.description}</p>
+        </Link>
+      ))}
+    </div>
+  </div>
+);
+
+const GamePage = ({ name }) => (
+  <div className="p-6">
+    <h2 className="text-2xl font-bold mb-2">{name} 遊戲</h2>
+    <p className="text-sm mb-4">遊戲嵌入區（可用 iframe 或原生 JS 遊戲）</p>
+    <iframe
+      title={name}
+      src={`/games/${name.toLowerCase()}/index.html`}
+      className="w-full h-[500px] border"
+    />
+  </div>
+);
+
+const Leaderboard = () => (
+  <div className="p-6">
+    <h2 className="text-xl font-bold mb-4">排行榜</h2>
+    <ul className="list-disc list-inside">
+      <li>猜數字 - 小明 - 999 分</li>
+      <li>2048 - 小美 - 2048 分</li>
+    </ul>
+  </div>
+);
+
+const Profile = () => (
+  <div className="p-6">
+    <h2 className="text-xl font-bold mb-2">會員中心</h2>
+    <p>暱稱：Gamer001</p>
+    <p>收藏遊戲：猜數字、貪食蛇</p>
+  </div>
+);
+
+const Login = () => (
+  <div className="p-6 max-w-md mx-auto">
+    <h2 className="text-xl font-bold mb-4">登入平台</h2>
+    <input type="text" placeholder="帳號" className="border p-2 w-full mb-2 text-black" />
+    <input type="password" placeholder="密碼" className="border p-2 w-full mb-4 text-black" />
+    <button className="bg-blue-500 text-white px-4 py-2 rounded">登入</button>
+  </div>
+);
+
+const games = [
+  {
+    name: "猜數字",
+    link: "/games/guess",
+    image: "https://via.placeholder.com/300x160?text=Guess",
+    description: "經典的猜數字遊戲，挑戰你的邏輯推理。"
+  },
+  {
+    name: "貪食蛇",
+    link: "/games/snake",
+    image: "https://via.placeholder.com/300x160?text=Snake",
+    description: "吃蘋果、變長、避免撞牆。懷舊經典！"
+  },
+  {
+    name: "2048",
+    link: "/games/2048",
+    image: "https://via.placeholder.com/300x160?text=2048",
+    description: "將相同數字合併，挑戰高分！"
+  }
+];
+
+export default function App() {
+  return (
+    <Router>
+      <Header />
+      <Layout>
+        <Routes>
+          <Route path="/" element={<SteamHome />} />
+          <Route path="/games" element={<GameList />} />
+          <Route path="/games/guess" element={<GamePage name="Guess" />} />
+          <Route path="/games/snake" element={<GamePage name="Snake" />} />
+          <Route path="/games/2048" element={<GamePage name="2048" />} />
+          <Route path="/leaderboard" element={<Leaderboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      </Layout>
+    </Router>
+  );
+}
