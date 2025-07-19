@@ -1,130 +1,130 @@
-import React from 'react';
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>小遊戲平台</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Arial', sans-serif;
+      background-color: #e0f0ff; 
+      color: #333;
+    }
 
-const Header = () => (
-  <header className="fixed top-0 w-full z-50 bg-gray-900 text-white p-4 shadow-md flex justify-between items-center">
-    <h1 className="text-xl font-bold">小遊戲平台</h1>
-    <nav className="space-x-4">
-      <Link to="/" className="hover:underline">首頁</Link>
-      <Link to="/games" className="hover:underline">遊戲列表</Link>
-      <Link to="/leaderboard" className="hover:underline">排行榜</Link>
-      <Link to="/profile" className="hover:underline">會員中心</Link>
-      <Link to="/login" className="hover:underline">登入</Link>
+    .container {
+      max-width: 960px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    h1, h2 {
+      color: #003366;
+    }
+
+    nav {
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 8px 16px;
+      margin: 4px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin: 10px 0;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    iframe {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 100%;
+      height: 400px;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>小遊戲平台</h1>
+
+    <nav>
+      <button onclick="showSection('popular')">熱門遊戲</button>
+      <button onclick="showSection('all')">所有遊戲</button>
+      <button onclick="showSection('game')">隨機遊戲</button>
     </nav>
-  </header>
-);
 
-const Layout = ({ children }) => (
-  <div className="bg-gray-800 text-white min-h-screen pt-20">{children}</div>
-);
+    <!-- 熱門遊戲區 -->
+    <section id="popular">
+      <h2>🔥 熱門遊戲</h2>
+      <div id="popularList"></div>
+    </section>
 
-const SteamHome = () => (
-  <div className="p-8">
-    <h2 className="text-3xl font-bold mb-6">熱門遊戲</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {games.map((game, index) => (
-        <Link to={game.link} key={index} className="bg-gray-700 rounded-xl overflow-hidden hover:shadow-lg transition">
-          <div className="h-40 bg-cover bg-center" style={{ backgroundImage: `url(${game.image})` }}></div>
-          <div className="p-4">
-            <h3 className="text-lg font-semibold">{game.name}</h3>
-            <p className="text-sm text-gray-300">{game.description}</p>
-          </div>
-        </Link>
-      ))}
-    </div>
+    <!-- 所有遊戲區 -->
+    <section id="all" style="display:none;">
+      <h2>📋 所有遊戲</h2>
+      <div id="allList"></div>
+    </section>
+
+    <!-- 單一遊戲展示 -->
+    <section id="game" style="display:none;">
+      <h2 id="gameTitle"></h2>
+      <p>遊戲嵌入區（可用 iframe 或原生 JS 遊戲）</p>
+      <iframe id="gameFrame" src=""></iframe>
+    </section>
   </div>
-);
 
-const GameList = () => (
-  <div className="p-8">
-    <h2 className="text-2xl font-bold mb-4">所有遊戲</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {games.map((game, index) => (
-        <Link to={game.link} key={index} className="bg-gray-700 rounded-xl hover:shadow-lg transition p-4">
-          <h3 className="text-lg font-semibold">{game.name}</h3>
-          <p className="text-sm text-gray-300">{game.description}</p>
-        </Link>
-      ))}
-    </div>
-  </div>
-);
+  <script>
+    const games = [
+      { name: '拼圖大師', description: '挑戰你的邏輯極限', path: 'puzzle.html' },
+      { name: '連連看', description: '最適合打發時間的經典連線遊戲', path: 'linkgame.html' },
+      { name: '數字大挑戰', description: '考驗你的反應與計算力', path: 'mathgame.html' },
+    ];
 
-const GamePage = ({ name }) => (
-  <div className="p-6">
-    <h2 className="text-2xl font-bold mb-2">{name} 遊戲</h2>
-    <p className="text-sm mb-4">遊戲嵌入區（可用 iframe 或原生 JS 遊戲）</p>
-    <iframe
-      title={name}
-      src={`/games/${name.toLowerCase()}/index.html`}
-      className="w-full h-[500px] border"
-    />
-  </div>
-);
+    function renderGameList(targetId, gameArray) {
+      const container = document.getElementById(targetId);
+      container.innerHTML = '';
+      gameArray.forEach(game => {
+        const div = document.createElement('div');
+        div.className = 'card';
+        div.innerHTML = `<strong>${game.name}</strong><p>${game.description}</p>`;
+        container.appendChild(div);
+      });
+    }
 
-const Leaderboard = () => (
-  <div className="p-6">
-    <h2 className="text-xl font-bold mb-4">排行榜</h2>
-    <ul className="list-disc list-inside">
-      <li>猜數字 - 小明 - 999 分</li>
-      <li>2048 - 小美 - 2048 分</li>
-    </ul>
-  </div>
-);
+    function showSection(section) {
+      document.getElementById('popular').style.display = 'none';
+      document.getElementById('all').style.display = 'none';
+      document.getElementById('game').style.display = 'none';
 
-const Profile = () => (
-  <div className="p-6">
-    <h2 className="text-xl font-bold mb-2">會員中心</h2>
-    <p>暱稱：Gamer001</p>
-    <p>收藏遊戲：猜數字、貪食蛇</p>
-  </div>
-);
+      if (section === 'popular') {
+        renderGameList('popularList', games.slice(0, 2));
+      } else if (section === 'all') {
+        renderGameList('allList', games);
+      } else if (section === 'game') {
+        const randomGame = games[Math.floor(Math.random() * games.length)];
+        document.getElementById('gameTitle').innerText = `${randomGame.name} 遊戲`;
+        document.getElementById('gameFrame').src = `games/${randomGame.path}`;
+      }
 
-const Login = () => (
-  <div className="p-6 max-w-md mx-auto">
-    <h2 className="text-xl font-bold mb-4">登入平台</h2>
-    <input type="text" placeholder="帳號" className="border p-2 w-full mb-2 text-black" />
-    <input type="password" placeholder="密碼" className="border p-2 w-full mb-4 text-black" />
-    <button className="bg-blue-500 text-white px-4 py-2 rounded">登入</button>
-  </div>
-);
+      document.getElementById(section).style.display = 'block';
+    }
 
-const games = [
-  {
-    name: "猜數字",
-    link: "/games/guess",
-    image: "https://via.placeholder.com/300x160?text=Guess",
-    description: "經典的猜數字遊戲，挑戰你的邏輯推理。"
-  },
-  {
-    name: "貪食蛇",
-    link: "/games/snake",
-    image: "https://via.placeholder.com/300x160?text=Snake",
-    description: "吃蘋果、變長、避免撞牆。懷舊經典！"
-  },
-  {
-    name: "2048",
-    link: "/games/2048",
-    image: "https://via.placeholder.com/300x160?text=2048",
-    description: "將相同數字合併，挑戰高分！"
-  }
-];
-
-export default function App() {
-  return (
-    <Router>
-      <Header />
-      <Layout>
-        <Routes>
-          <Route path="/" element={<SteamHome />} />
-          <Route path="/games" element={<GameList />} />
-          <Route path="/games/guess" element={<GamePage name="Guess" />} />
-          <Route path="/games/snake" element={<GamePage name="Snake" />} />
-          <Route path="/games/2048" element={<GamePage name="2048" />} />
-          <Route path="/leaderboard" element={<Leaderboard />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/login" element={<Login />} />
-        </Routes>
-      </Layout>
-    </Router>
-  );
-}
+    // 預設顯示熱門遊戲
+    showSection('popular');
+  </script>
+</body>
+</html>
